@@ -2,7 +2,9 @@ package com.erp.smartbusiness.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class AssetRequest {
@@ -19,6 +21,10 @@ public class AssetRequest {
     private String serialNumber;
 
     private LocalDate purchaseDate;
+
+    @NotNull(message = "Purchase price is required")
+    @Positive(message = "Purchase price must be greater than 0")
+    private BigDecimal purchasePrice;
 
     @NotBlank(message = "Asset status is required")
     private String status;
@@ -66,6 +72,14 @@ public class AssetRequest {
 
     public void setPurchaseDate(LocalDate purchaseDate) {
         this.purchaseDate = purchaseDate;
+    }
+
+    public BigDecimal getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(BigDecimal purchasePrice) {
+        this.purchasePrice = purchasePrice;
     }
 
     public String getStatus() {

@@ -16,8 +16,10 @@ public class AssetService {
     private final AssetRepository assetRepository;
     private final EmployeeRepository employeeRepository;
 
-    public AssetService(AssetRepository assetRepository,
-                        EmployeeRepository employeeRepository) {
+    public AssetService(
+            AssetRepository assetRepository,
+            EmployeeRepository employeeRepository
+    ) {
         this.assetRepository = assetRepository;
         this.employeeRepository = employeeRepository;
     }
@@ -31,7 +33,9 @@ public class AssetService {
 
         if (request.getSerialNumber() != null
                 && !request.getSerialNumber().isBlank()
-                && assetRepository.existsBySerialNumber(request.getSerialNumber())) {
+                && assetRepository.existsBySerialNumber(
+                request.getSerialNumber()
+        )) {
 
             throw new RuntimeException("Serial number already exists");
         }
@@ -43,6 +47,7 @@ public class AssetService {
         asset.setAssetType(request.getAssetType());
         asset.setSerialNumber(request.getSerialNumber());
         asset.setPurchaseDate(request.getPurchaseDate());
+        asset.setPurchasePrice(request.getPurchasePrice());
         asset.setStatus(request.getStatus());
 
         if (request.getAssignedToId() != null) {
@@ -53,7 +58,8 @@ public class AssetService {
                     new ResourceNotFoundException(
                             "Employee not found with id: "
                                     + request.getAssignedToId()
-                    ));
+                    )
+            );
 
             asset.setAssignedTo(employee);
         }
@@ -78,7 +84,8 @@ public class AssetService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Asset not found with id: " + id
-                        ));
+                        )
+                );
     }
 
     // Update Asset
@@ -88,18 +95,25 @@ public class AssetService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Asset not found with id: " + id
-                        ));
+                        )
+                );
 
         if (!asset.getAssetCode().equals(request.getAssetCode())
-                && assetRepository.existsByAssetCode(request.getAssetCode())) {
+                && assetRepository.existsByAssetCode(
+                request.getAssetCode()
+        )) {
 
             throw new RuntimeException("Asset code already exists");
         }
 
         if (request.getSerialNumber() != null
                 && !request.getSerialNumber().isBlank()
-                && !request.getSerialNumber().equals(asset.getSerialNumber())
-                && assetRepository.existsBySerialNumber(request.getSerialNumber())) {
+                && !request.getSerialNumber().equals(
+                asset.getSerialNumber()
+        )
+                && assetRepository.existsBySerialNumber(
+                request.getSerialNumber()
+        )) {
 
             throw new RuntimeException("Serial number already exists");
         }
@@ -109,6 +123,7 @@ public class AssetService {
         asset.setAssetType(request.getAssetType());
         asset.setSerialNumber(request.getSerialNumber());
         asset.setPurchaseDate(request.getPurchaseDate());
+        asset.setPurchasePrice(request.getPurchasePrice());
         asset.setStatus(request.getStatus());
 
         if (request.getAssignedToId() != null) {
@@ -119,7 +134,8 @@ public class AssetService {
                     new ResourceNotFoundException(
                             "Employee not found with id: "
                                     + request.getAssignedToId()
-                    ));
+                    )
+            );
 
             asset.setAssignedTo(employee);
 

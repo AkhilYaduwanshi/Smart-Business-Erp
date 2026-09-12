@@ -2,6 +2,7 @@ package com.erp.smartbusiness.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -25,6 +26,9 @@ public class Asset {
     private String serialNumber;
 
     private LocalDate purchaseDate;
+
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal purchasePrice;
 
     @Column(nullable = false)
     private String status;
@@ -82,6 +86,14 @@ public class Asset {
 
     public void setPurchaseDate(LocalDate purchaseDate) {
         this.purchaseDate = purchaseDate;
+    }
+
+    public BigDecimal getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(BigDecimal purchasePrice) {
+        this.purchasePrice = purchasePrice;
     }
 
     public String getStatus() {

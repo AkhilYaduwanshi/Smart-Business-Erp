@@ -38,8 +38,12 @@ public class EmployeeService {
             throw new RuntimeException("Email already exists");
         }
 
-        if (employeeRepository.existsByEmployeeCode(request.getEmployeeCode())) {
-            throw new RuntimeException("Employee code already exists");
+        if (employeeRepository.existsByEmployeeCode(
+                request.getEmployeeCode())) {
+
+            throw new RuntimeException(
+                    "Employee code already exists"
+            );
         }
 
         Employee employee = new Employee();
@@ -66,11 +70,15 @@ public class EmployeeService {
             String direction) {
 
         if (page < 0) {
-            throw new IllegalArgumentException("Page number cannot be negative");
+            throw new IllegalArgumentException(
+                    "Page number cannot be negative"
+            );
         }
 
         if (size <= 0) {
-            throw new IllegalArgumentException("Page size must be greater than zero");
+            throw new IllegalArgumentException(
+                    "Page size must be greater than zero"
+            );
         }
 
         Sort sort;
@@ -81,7 +89,8 @@ public class EmployeeService {
             sort = Sort.by(sortBy).ascending();
         }
 
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable =
+                PageRequest.of(page, size, sort);
 
         return employeeRepository.findAll(pageable);
     }
@@ -89,9 +98,11 @@ public class EmployeeService {
     // GET MY PROFILE
     public Employee getMyProfile() {
 
-        User currentUser = currentUserService.getCurrentUser();
+        User currentUser =
+                currentUserService.getCurrentUser();
 
-        Employee employee = currentUser.getEmployee();
+        Employee employee =
+                currentUser.getEmployee();
 
         if (employee == null) {
             throw new ResourceNotFoundException(
@@ -109,7 +120,8 @@ public class EmployeeService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Employee not found with id: " + id
-                        ));
+                        )
+                );
     }
 
     // UPDATE EMPLOYEE
@@ -117,15 +129,20 @@ public class EmployeeService {
             Long id,
             EmployeeRequest request) {
 
-        Employee employee = getEmployeeById(id);
+        Employee employee =
+                getEmployeeById(id);
 
         if (!employee.getEmail().equals(request.getEmail())
-                && employeeRepository.existsByEmail(request.getEmail())) {
+                && employeeRepository.existsByEmail(
+                request.getEmail())) {
 
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException(
+                    "Email already exists"
+            );
         }
 
-        if (!employee.getEmployeeCode().equals(request.getEmployeeCode())
+        if (!employee.getEmployeeCode().equals(
+                request.getEmployeeCode())
                 && employeeRepository.existsByEmployeeCode(
                 request.getEmployeeCode())) {
 
@@ -134,16 +151,45 @@ public class EmployeeService {
             );
         }
 
-        employee.setEmployeeCode(request.getEmployeeCode());
-        employee.setFirstName(request.getFirstName());
-        employee.setLastName(request.getLastName());
-        employee.setEmail(request.getEmail());
-        employee.setPhone(request.getPhone());
-        employee.setDepartment(request.getDepartment());
-        employee.setDesignation(request.getDesignation());
-        employee.setSalary(request.getSalary());
-        employee.setJoiningDate(request.getJoiningDate());
-        employee.setStatus(request.getStatus());
+        employee.setEmployeeCode(
+                request.getEmployeeCode()
+        );
+
+        employee.setFirstName(
+                request.getFirstName()
+        );
+
+        employee.setLastName(
+                request.getLastName()
+        );
+
+        employee.setEmail(
+                request.getEmail()
+        );
+
+        employee.setPhone(
+                request.getPhone()
+        );
+
+        employee.setDepartment(
+                request.getDepartment()
+        );
+
+        employee.setDesignation(
+                request.getDesignation()
+        );
+
+        employee.setSalary(
+                request.getSalary()
+        );
+
+        employee.setJoiningDate(
+                request.getJoiningDate()
+        );
+
+        employee.setStatus(
+                request.getStatus()
+        );
 
         return employeeRepository.save(employee);
     }
@@ -151,13 +197,32 @@ public class EmployeeService {
     // DELETE EMPLOYEE
     public void deleteEmployee(Long id) {
 
-        if (!employeeRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    "Employee not found with id: " + id
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Employee not found with id: " + id
+                        )
+                );
+
+        // Check whether this employee has a user account
+        boolean hasUserAccount =
+                userRepository.findAll()
+                        .stream()
+                        .anyMatch(user ->
+                                user.getEmployee() != null
+                                        && user.getEmployee()
+                                        .getId()
+                                        .equals(employee.getId())
+                        );
+
+        if (hasUserAccount) {
+            throw new RuntimeException(
+                    "Cannot delete employee because a user account is linked. "
+                            + "Mark the employee as INACTIVE instead."
             );
         }
 
-        employeeRepository.deleteById(id);
+        employeeRepository.delete(employee);
     }
 
     // SEARCH EMPLOYEES BY NAME
@@ -168,7 +233,8 @@ public class EmployeeService {
     }
 
     // SEARCH EMPLOYEES BY DEPARTMENT
-    public List<Employee> searchByDepartment(String department) {
+    public List<Employee> searchByDepartment(
+            String department) {
 
         return employeeRepository
                 .findByDepartmentIgnoreCase(department);

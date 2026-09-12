@@ -12,12 +12,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
+
 @Configuration
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(
+            JwtAuthenticationFilter jwtAuthenticationFilter
+    ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -28,18 +36,72 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration) throws Exception {
+            AuthenticationConfiguration configuration
+    ) throws Exception {
 
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration =
+                new CorsConfiguration();
+
+        configuration.setAllowedOrigins(
+                List.of(
+                        "http://localhost:5173",
+                        "http://localhost:5174",
+                        "http://localhost:5175"
+                )
+        );
+
+        configuration.setAllowedMethods(
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "PATCH",
+                        "OPTIONS"
+                )
+        );
+
+        configuration.setAllowedHeaders(
+                List.of("*")
+        );
+
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
+
+        return source;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http
+    ) throws Exception {
 
         http
+
+                // Disable CSRF for JWT-based REST API
                 .csrf(csrf -> csrf.disable())
 
+                // Enable CORS
+                .cors(cors ->
+                        cors.configurationSource(
+                                corsConfigurationSource()
+                        )
+                )
+
+                // Stateless JWT authentication
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
@@ -48,87 +110,213 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Login
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // =========================
+                        // AUTH
+                        // =========================
 
-                        // Swagger / OpenAPI
+                        .requestMatchers(
+                                "/api/auth/**"
+                        ).permitAll()
+
+
+                        // =========================
+                        // SWAGGER
+                        // =========================
+
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-                        // User management
-                        .requestMatchers("/api/users/**")
-                        .hasRole("ADMIN")
 
-                        // Employee
-                        .requestMatchers(HttpMethod.GET, "/api/employees/me")
-                        .hasAnyRole("ADMIN", "EMPLOYEE")
+                        // =========================
+                        // USERS
+                        // ADMIN ONLY
+                        // =========================
 
-                        .requestMatchers("/api/employees/**")
-                        .hasRole("ADMIN")
+                        .requestMatchers(
+                                "/api/users/**"
+                        ).hasRole("ADMIN")
 
-                        // Projects
-                        .requestMatchers("/api/projects/**")
-                        .hasAnyRole("ADMIN", "MANAGER")
 
-                                // Tasks - Admin and Manager can access all tasks
-                                .requestMatchers(HttpMethod.GET, "/api/tasks")
-                                .hasAnyRole("ADMIN", "MANAGER")
+                        // =========================
+                        // EMPLOYEES
+                        // =========================
 
-                               // Employee can see only assigned tasks
-                                .requestMatchers(HttpMethod.GET, "/api/tasks/my")
-                                .hasRole("EMPLOYEE")
+                        // Logged-in employees can view own profile
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/employees/me"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "EMPLOYEE"
+                        )
 
-                              // Other task operations
-                                .requestMatchers("/api/tasks/**")
-                                .hasAnyRole("ADMIN", "MANAGER", "EMPLOYEE")
-                        // Leave - only ADMIN and MANAGER can see all leaves
-                        .requestMatchers(HttpMethod.GET, "/api/leaves")
-                        .hasAnyRole("ADMIN", "MANAGER")
+                        // ADMIN + MANAGER can view employee list
+                        // Needed for Manager task assignment
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/employees"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER"
+                        )
 
-                        // Employee can see only own leaves
-                        .requestMatchers(HttpMethod.GET, "/api/leaves/my")
-                        .hasRole("EMPLOYEE")
+                        // ADMIN only for employee management
+                        .requestMatchers(
+                                "/api/employees/**"
+                        ).hasRole("ADMIN")
 
-                        // Leave approval
+
+                        // =========================
+                        // PROJECTS
+                        // ADMIN + MANAGER
+                        // =========================
+
+                        .requestMatchers(
+                                "/api/projects/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER"
+                        )
+
+
+                        // =========================
+                        // TASKS
+                        // =========================
+
+                        // ADMIN + MANAGER can view all tasks
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/tasks"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER"
+                        )
+
+                        // EMPLOYEE can view own tasks
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/tasks/my"
+                        ).hasRole("EMPLOYEE")
+
+                        // Task create/update/delete
+                        .requestMatchers(
+                                "/api/tasks/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER",
+                                "EMPLOYEE"
+                        )
+
+
+                        // =========================
+                        // LEAVES
+                        // =========================
+
+                        // ADMIN + MANAGER can view all leaves
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/leaves"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER"
+                        )
+
+                        // EMPLOYEE can view own leaves
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/leaves/my"
+                        ).hasRole("EMPLOYEE")
+
+                        // Approve leave
                         .requestMatchers(
                                 HttpMethod.PUT,
                                 "/api/leaves/*/approve"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER"
                         )
-                        .hasAnyRole("ADMIN", "MANAGER")
 
+                        // Reject leave
                         .requestMatchers(
                                 HttpMethod.PUT,
                                 "/api/leaves/*/reject"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER"
                         )
-                        .hasAnyRole("ADMIN", "MANAGER")
 
-                        // Other leave operations require login;
-                        // ownership is checked inside LeaveService
-                        .requestMatchers("/api/leaves/**")
-                        .hasAnyRole("ADMIN", "MANAGER", "EMPLOYEE")
+                        // Other leave operations
+                        .requestMatchers(
+                                "/api/leaves/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER",
+                                "EMPLOYEE"
+                        )
 
-                        // Attendance - Admin and Manager can access all attendance
-                        .requestMatchers(HttpMethod.GET, "/api/attendance")
-                        .hasAnyRole("ADMIN", "MANAGER")
 
-                        .requestMatchers("/api/attendance/my")
-                        .hasRole("EMPLOYEE")
+                        // =========================
+                        // ATTENDANCE
+                        // =========================
 
-                        .requestMatchers("/api/attendance/**")
-                        .hasAnyRole("ADMIN", "MANAGER", "EMPLOYEE")
+                        // ADMIN + MANAGER can view all attendance
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/attendance"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER"
+                        )
 
-                        // Assets
-                        .requestMatchers("/api/assets/**")
-                        .hasAnyRole("ADMIN", "MANAGER")
+                        // EMPLOYEE can view own attendance
+                        .requestMatchers(
+                                "/api/attendance/my"
+                        ).hasRole("EMPLOYEE")
 
-                        // Dashboard - Admin and Manager only
-                        .requestMatchers("/api/dashboard/**")
-                        .hasAnyRole("ADMIN", "MANAGER")
+                        // Other attendance operations
+                        .requestMatchers(
+                                "/api/attendance/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER",
+                                "EMPLOYEE"
+                        )
 
-                        // Everything else
+
+                        // =========================
+                        // ASSETS
+                        // ADMIN + MANAGER
+                        // =========================
+
+                        .requestMatchers(
+                                "/api/assets/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER"
+                        )
+
+
+                        // =========================
+                        // DASHBOARD
+                        // ALL AUTHENTICATED ROLES
+                        // =========================
+
+                        .requestMatchers(
+                                "/api/dashboard/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "MANAGER",
+                                "EMPLOYEE"
+                        )
+
+
+                        // =========================
+                        // EVERYTHING ELSE
+                        // =========================
+
                         .anyRequest().authenticated()
                 )
 
