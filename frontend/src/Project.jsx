@@ -34,7 +34,7 @@ function Project() {
             setError("");
 
             const response = await axios.get(
-                "http://localhost:8081/api/projects",
+                "https://smart-business-erp.onrender.com/api/projects",
                 authConfig
             );
 
@@ -106,7 +106,7 @@ function Project() {
         try {
             if (editingId) {
                 await axios.put(
-                    `http://localhost:8081/api/projects/${editingId}`,
+                    `https://smart-business-erp.onrender.com/api/projects/${editingId}`,
                     payload,
                     authConfig
                 );
@@ -114,7 +114,7 @@ function Project() {
                 setMessage("Project updated successfully!");
             } else {
                 await axios.post(
-                    "http://localhost:8081/api/projects",
+                    "https://smart-business-erp.onrender.com/api/projects",
                     payload,
                     authConfig
                 );
@@ -177,7 +177,7 @@ function Project() {
 
         try {
             await axios.delete(
-                `http://localhost:8081/api/projects/${id}`,
+                `https://smart-business-erp.onrender.com/api/projects/${id}`,
                 authConfig
             );
 

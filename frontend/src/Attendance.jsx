@@ -54,8 +54,8 @@ function Attendance() {
 
             const url =
                 role === "EMPLOYEE"
-                    ? "http://localhost:8081/api/attendance/my"
-                    : "http://localhost:8081/api/attendance";
+                    ? "https://smart-business-erp.onrender.com/api/attendance/my"
+                    : "https://smart-business-erp.onrender.com/api/attendance";
 
             const response = await axios.get(
                 url,
@@ -125,7 +125,7 @@ function Attendance() {
         try {
 
             await axios.post(
-                "http://localhost:8081/api/attendance",
+                "https://smart-business-erp.onrender.com/api/attendance",
                 formData,
                 authConfig
             );

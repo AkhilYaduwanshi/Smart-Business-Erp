@@ -79,7 +79,7 @@ function Task() {
             if (role === "EMPLOYEE") {
 
                 const response = await axios.get(
-                    "http://localhost:8081/api/tasks/my",
+                    "https://smart-business-erp.onrender.com/api/tasks/my",
                     authConfig()
                 );
 
@@ -101,7 +101,7 @@ function Task() {
                 ] = await Promise.all([
 
                     axios.get(
-                        "http://localhost:8081/api/tasks",
+                        "https://smart-business-erp.onrender.com/api/tasks",
                         {
                             ...authConfig(),
                             params: {
@@ -114,12 +114,12 @@ function Task() {
                     ),
 
                     axios.get(
-                        "http://localhost:8081/api/projects",
+                        "https://smart-business-erp.onrender.com/api/projects",
                         authConfig()
                     ),
 
                     axios.get(
-                        "http://localhost:8081/api/employees",
+                        "https://smart-business-erp.onrender.com/api/employees",
                         {
                             ...authConfig(),
                             params: {
@@ -267,7 +267,7 @@ function Task() {
         try {
 
             await axios.delete(
-                `http://localhost:8081/api/tasks/${taskId}`,
+                `https://smart-business-erp.onrender.com/api/tasks/${taskId}`,
                 authConfig()
             );
 
@@ -319,7 +319,7 @@ function Task() {
             if (editingTask) {
 
                 await axios.put(
-                    `http://localhost:8081/api/tasks/${editingTask.id}`,
+                    `https://smart-business-erp.onrender.com/api/tasks/${editingTask.id}`,
                     payload,
                     authConfig()
                 );
@@ -331,7 +331,7 @@ function Task() {
             } else {
 
                 await axios.post(
-                    "http://localhost:8081/api/tasks",
+                    "https://smart-business-erp.onrender.com/api/tasks",
                     payload,
                     authConfig()
                 );

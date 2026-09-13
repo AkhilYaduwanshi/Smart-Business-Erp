@@ -36,7 +36,7 @@ function Employee() {
             setError("");
 
             const response = await axios.get(
-                "http://localhost:8081/api/employees?page=0&size=50&sortBy=id&direction=asc",
+                "https://smart-business-erp.onrender.com/api/employees?page=0&size=50&sortBy=id&direction=asc",
                 authConfig
             );
 
@@ -112,7 +112,7 @@ function Employee() {
         try {
             if (editingId) {
                 await axios.put(
-                    `http://localhost:8081/api/employees/${editingId}`,
+                    `https://smart-business-erp.onrender.com/api/employees/${editingId}`,
                     payload,
                     authConfig
                 );
@@ -120,7 +120,7 @@ function Employee() {
                 setMessage("Employee updated successfully!");
             } else {
                 await axios.post(
-                    "http://localhost:8081/api/employees",
+                    "https://smart-business-erp.onrender.com/api/employees",
                     payload,
                     authConfig
                 );
@@ -183,7 +183,7 @@ function Employee() {
 
         try {
             await axios.delete(
-                `http://localhost:8081/api/employees/${id}`,
+                `https://smart-business-erp.onrender.com/api/employees/${id}`,
                 authConfig
             );
 

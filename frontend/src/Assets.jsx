@@ -36,8 +36,8 @@ function Assets() {
             setError("");
 
             const url = filterStatus
-                ? `http://localhost:8081/api/assets?status=${filterStatus}`
-                : "http://localhost:8081/api/assets";
+                ? `https://smart-business-erp.onrender.com/api/assets?status=${filterStatus}`
+                : "https://smart-business-erp.onrender.com/api/assets";
 
             const response = await axios.get(
                 url,
@@ -126,7 +126,7 @@ function Assets() {
             if (editingId) {
 
                 await axios.put(
-                    `http://localhost:8081/api/assets/${editingId}`,
+                    `https://smart-business-erp.onrender.com/api/assets/${editingId}`,
                     payload,
                     authConfig
                 );
@@ -138,7 +138,7 @@ function Assets() {
             } else {
 
                 await axios.post(
-                    "http://localhost:8081/api/assets",
+                    "https://smart-business-erp.onrender.com/api/assets",
                     payload,
                     authConfig
                 );
@@ -225,7 +225,7 @@ function Assets() {
         try {
 
             await axios.delete(
-                `http://localhost:8081/api/assets/${id}`,
+                `https://smart-business-erp.onrender.com/api/assets/${id}`,
                 authConfig
             );
 

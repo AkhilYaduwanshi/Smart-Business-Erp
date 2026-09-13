@@ -36,12 +36,12 @@ function User() {
             const [usersResponse, employeesResponse] =
                 await Promise.all([
                     axios.get(
-                        "http://localhost:8081/api/users",
+                        "https://smart-business-erp.onrender.com/api/users",
                         authConfig
                     ),
 
                     axios.get(
-                        "http://localhost:8081/api/employees",
+                        "https://smart-business-erp.onrender.com/api/employees",
                         {
                             ...authConfig,
                             params: {
@@ -129,7 +129,7 @@ function User() {
 
         try {
             await axios.post(
-                "http://localhost:8081/api/users",
+                "https://smart-business-erp.onrender.com/api/users",
                 payload,
                 authConfig
             );
@@ -164,7 +164,7 @@ function User() {
 
         try {
             await axios.put(
-                `http://localhost:8081/api/users/${encodeURIComponent(
+                `https://smart-business-erp.onrender.com/api/users/${encodeURIComponent(
                     username
                 )}/reset-password`,
                 {

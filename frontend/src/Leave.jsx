@@ -51,8 +51,8 @@ function Leave() {
 
             const url =
                 role === "EMPLOYEE"
-                    ? "http://localhost:8081/api/leaves/my"
-                    : "http://localhost:8081/api/leaves";
+                    ? "https://smart-business-erp.onrender.com/api/leaves/my"
+                    : "https://smart-business-erp.onrender.com/api/leaves";
 
             const response = await axios.get(
                 url,
@@ -115,7 +115,7 @@ function Leave() {
         try {
 
             await axios.post(
-                "http://localhost:8081/api/leaves",
+                "https://smart-business-erp.onrender.com/api/leaves",
                 formData,
                 authConfig
             );
