@@ -2,6 +2,11 @@
 
 [🚀 **Live Demo**](https://smart-business-7yzrycc99-akhilyaduwanshis-projects.vercel.app)
 
+### 🔑 Demo Credentials
+
+**Username:** `admin`  
+**Password:** `password`
+
 A full-stack, secure and role-based **Enterprise Resource Planning (ERP)** system built with **Java, Spring Boot, Spring Security, JWT, JPA/Hibernate, MySQL and React**.
 
 Smart Business ERP helps manage employees, projects, tasks, leaves, attendance, assets and user access through a secure REST API and modern React frontend.
