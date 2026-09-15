@@ -1,40 +1,39 @@
-# Smart Business ERP
+# 💼 Smart Business ERP
 
-A secure and modular Enterprise Resource Planning (ERP) backend built using
-Spring Boot, Spring Security, JWT, JPA/Hibernate, MySQL and Swagger/OpenAPI.
+[🚀 **Live Demo**](https://smart-business-7yzrycc99-akhilyaduwanshis-projects.vercel.app)
 
-## Overview
+A full-stack, secure and role-based **Enterprise Resource Planning (ERP)** system built with **Java, Spring Boot, Spring Security, JWT, JPA/Hibernate, MySQL and React**.
 
-Smart Business ERP is a backend system designed to manage common business
-operations such as employees, projects, tasks, leaves, attendance and company
-assets.
+Smart Business ERP helps manage employees, projects, tasks, leaves, attendance, assets and user access through a secure REST API and modern React frontend.
 
-The application includes JWT-based authentication, role-based authorization,
-employee ownership checks, validation, exception handling, pagination,
-filtering, sorting and API documentation.
+---
 
-## Features
+## ✨ Features
 
-- Employee Management
-- Project Management
-- Task Management
-- Leave Management
-- Leave Approval Workflow
-- Attendance Management
-- Asset Management
-- Dashboard Summary
-- JWT Authentication
-- Role-Based Authorization
-- Employee Ownership Authorization
-- Pagination
-- Search and Filtering
-- Sorting
-- Global Exception Handling
-- Swagger/OpenAPI Documentation
+- 🔐 JWT-based authentication
+- 👥 Role-based authorization
+- 🧑‍💼 Employee management
+- 📁 Project management
+- ✅ Task management
+- 🗓️ Leave management
+- ✔️ Leave approval and rejection workflow
+- ⏱️ Attendance management
+- 💻 Asset management
+- 🔑 User management
+- 📊 Dashboard summary
+- 🔎 Search and filtering
+- 📄 Pagination and sorting
+- 🛡️ Ownership-based authorization
+- ✅ Bean validation
+- ⚠️ Global exception handling
+- 📖 Swagger/OpenAPI documentation
+- 🌐 Production deployment
 
-## User Roles
+---
 
-### ADMIN
+## 👤 User Roles
+
+### 👑 ADMIN
 
 - Manage employees
 - Manage users
@@ -44,9 +43,9 @@ filtering, sorting and API documentation.
 - Approve/reject leaves
 - Manage attendance
 - Manage assets
-- View dashboard summary
+- View dashboard
 
-### MANAGER
+### 🧑‍💼 MANAGER
 
 - Manage projects
 - Manage tasks
@@ -54,108 +53,82 @@ filtering, sorting and API documentation.
 - Approve/reject leaves
 - Manage attendance
 - Manage assets
-- View dashboard summary
+- View dashboard
 
-### EMPLOYEE
+### 👨‍💻 EMPLOYEE
 
-- View own employee profile
-- View own leaves
-- Create own leave requests
-- View own attendance
-- Create own attendance
+- View dashboard
 - View assigned tasks
-- Update/delete only owned records where permitted
+- Create/view own leaves
+- View own attendance
+- Perform allowed ownership-based operations
 
-## Technology Stack
+---
 
-| Technology | Purpose |
-|---|---|
-| Java | Backend programming language |
-| Spring Boot | REST API framework |
-| Spring Security | Authentication and authorization |
-| JWT | Stateless authentication |
-| Spring Data JPA | Database access |
-| Hibernate | ORM |
-| MySQL | Relational database |
-| Maven | Build and dependency management |
-| Bean Validation | Request validation |
-| Lombok | Boilerplate reduction |
-| Swagger/OpenAPI | API documentation |
-| IntelliJ IDEA | Development environment |
-| Postman | API testing |
+## 🛠️ Tech Stack
 
-## Architecture
+### Backend
 
-The application follows a layered architecture:
+- ☕ Java 25
+- 🌱 Spring Boot 4.1.0
+- 🔐 Spring Security
+- 🎟️ JWT
+- 🗃️ Spring Data JPA
+- 🧩 Hibernate
+- 🐬 MySQL 8.x
+- 📦 Maven
+- ✅ Bean Validation
+- 🧰 Lombok
+- 📖 Swagger / OpenAPI
+
+### Frontend
+
+- ⚛️ React
+- ⚡ Vite
+- 🔗 Axios
+- 🧭 React Router
+- 🎨 CSS
+
+### Deployment
+
+- 🐳 Docker
+- ☁️ Render
+- 🗄️ Aiven MySQL
+- ▲ Vercel
+
+### Tools
+
+- IntelliJ IDEA
+- Postman
+- Git
+- GitHub
+
+---
+
+## 🏗️ Architecture
 
 ```text
-Controller
-    ↓
-Service
-    ↓
-Repository
-    ↓
-MySQL Database
-
-Security flow:
-
-Login
-  ↓
-AuthenticationManager
-  ↓
-JWT Token
-  ↓
-JWT Authentication Filter
-  ↓
-SecurityContext
-  ↓
-Role Authorization
-  ↓
-Ownership Validation
-
-Project Structure
-com.erp.smartbusiness
-├── config
-│   ├── SecurityConfig
-│   ├── JwtAuthenticationFilter
-│   └── OpenApiConfig
-│
-├── controller
-│   ├── AuthController
-│   ├── UserController
-│   ├── EmployeeController
-│   ├── ProjectController
-│   ├── TaskController
-│   ├── LeaveController
-│   ├── AttendanceController
-│   ├── AssetController
-│   └── DashboardController
-│
-├── dto
-│   ├── LoginRequest
-│   ├── LoginResponse
-│   ├── UserRequest
-│   ├── UserResponse
-│   ├── PasswordResetRequest
-│   ├── EmployeeRequest
-│   ├── ProjectRequest
-│   ├── TaskRequest
-│   ├── LeaveRequest
-│   ├── AttendanceRequest
-│   ├── AssetRequest
-│   └── DashboardResponse
-│
-├── entity
-│   ├── User
-│   ├── Employee
-│   ├── Project
-│   ├── Task
-│   ├── Leave
-│   ├── Attendance
-│   └── Asset
-│
-├── repository
-│
-├── service
-│
-└── exception
+                    Internet
+                       |
+                       v
+                React Frontend
+                    Vercel
+                       |
+                       | HTTPS REST API
+                       v
+              Spring Boot Backend
+                    Render
+                       |
+             +---------+---------+
+             |                   |
+             v                   v
+        Spring Security    REST Controllers
+             |                   |
+             v                   v
+      JWT Authentication      Services
+                                 |
+                                 v
+                            Repositories
+                                 |
+                                 v
+                            Aiven MySQL
